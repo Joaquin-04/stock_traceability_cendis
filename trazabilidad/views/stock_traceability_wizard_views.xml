@@ -1,0 +1,48 @@
+<!-- stock_traceability_extension/views/stock_traceability_wizard_views.xml -->
+<odoo>
+    <record id="view_stock_traceability_wizard_form" model="ir.ui.view">
+        <field name="name">stock.traceability.wizard.form</field>
+        <field name="model">stock.traceability.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Filtrar Stock para Remito">
+                <group>
+                    <field name="warehouse_id"/>
+                    <field name="location_id"/>
+                    <field name="owner_id"/>
+                </group>
+                <footer>
+                    <button name="action_search_stock" type="object" string="Buscar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+                <sheet>
+                    <group>
+                        <field name="stock_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="product_id"/>
+                                <field name="available_qty"/>
+                                <field name="days_in_location"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="action_confirm_extraction" type="object" string="Confirmar extracción" class="btn-success"/>
+                        <button string="Cerrar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_traceability_wizard" model="ir.actions.act_window">
+        <field name="name">Filtrar Stock para Remito</field>
+        <field name="res_model">stock.traceability.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_stock_traceability_wizard"
+              name="Extracción controlada"
+              parent="stock.menu_stock_inventory_control"
+              action="action_stock_traceability_wizard"/>
+</odoo>
+

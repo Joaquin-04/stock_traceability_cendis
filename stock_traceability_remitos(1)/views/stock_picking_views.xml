@@ -1,0 +1,23 @@
+<!-- stock_traceability_remitos/views/stock_picking_views.xml -->
+<odoo>
+    <!-- Inherit de la vista de formulario de stock.move para establecer dominio en la selección de producto -->
+    <record id="view_move_form_traceability_remitos" model="ir.ui.view">
+        <field name="name">stock.move.form.traceability</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="priority" eval="170"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="available_qty" readonly="1"/>
+            </xpath>
+            <!-- Se inserta el campo 'allowed_product_ids' de forma invisible para que esté disponible en el dominio -->
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="allowed_product_ids" invisible="1"/>
+            </xpath>
+            <!-- Se establece el dominio para el campo product_id, aprovechando allowed_product_ids -->
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', allowed_product_ids)]</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
