@@ -10,12 +10,6 @@ class StockTraceabilityWizard(models.TransientModel):
 
     warehouse_id = fields.Many2one('stock.warehouse', string='Almacén', required=True)
     location_id = fields.Many2one('stock.location', string='Ubicación', required=True)
-    owner_id = fields.Many2one(
-        'res.partner', 
-        string='Propietario', 
-        domain="[('x_studio_propietario', '=', True)]", 
-        required=True
-    )
 
     # Este campo mostrará las líneas con los productos y la cantidad agregada
     stock_line_ids = fields.One2many(
