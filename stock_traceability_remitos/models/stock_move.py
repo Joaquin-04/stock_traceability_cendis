@@ -1,5 +1,11 @@
 # stock_traceability_remitos/models/stock_move.py
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+import logging
+
+_logger = logging.getLogger(__name__)  # Logger para depuración
+
 
 class StockMove(models.Model):
     _inherit = 'stock.move'
@@ -32,5 +38,31 @@ class StockMove(models.Model):
             # Utilizamos read_group para sumar las cantidades en stock.quant
             result = self.env['stock.quant'].read_group(domain, ['quantity'], [])
             move.available_qty = result[0]['quantity'] if result else 0
+
+
+    def _get_validation_locations_from_quant(self):
+        """Obtiene las ubicaciones desde los stock.quant de las líneas.
+        
+        Reglas:
+        - Si las líneas tienen `location_id`.
+        - Si no hay `location_id`, usa `self.location_id`.
+        """
+        locations = self.env['stock.location']
+        for line in self.move_line_ids:
+            _logger.warning(f"linea {line} Desde: {line.location_id.name}")
+            if line.location_id:
+                _logger.warning(
+                    "Línea ID %s: Quant encontrado en ubicación %s",
+                    line.id, line.location_id.display_name
+                )
+                locations |= line.location_id
+        if not locations:
+            _logger.warning(
+                "Movimiento ID %s: Sin location_id. Usando ubicación de origen: %s",
+                self.id, self.location_id.display_name
+            )
+            locations = self.location_id
+        return locations
+
 
     
